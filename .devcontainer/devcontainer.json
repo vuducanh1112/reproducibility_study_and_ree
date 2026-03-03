@@ -1,0 +1,21 @@
+{
+  "name": "Slidev Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+
+  // Forward the default Slidev port
+  "forwardPorts": [3030],
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vue.volar",
+        "unifiedjs.vscode-mdx"
+      ]
+    }
+  },
+
+  // Ensure Slidev binds to all interfaces so you can use your IP
+  "containerEnv": {
+    "SLIDEV_HOST": "0.0.0.0"
+  }
+}
