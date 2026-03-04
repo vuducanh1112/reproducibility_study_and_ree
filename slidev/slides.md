@@ -138,21 +138,77 @@ The pattern is consistent across years, venues, and fields: reproducibility is t
 -->
 
 ---
+layout: default
+---
 
-# Defining the Spectrum
-Reproducibility is a technical challenge, not just a social one.
+# What Does Reproducible Mean?
 
+<div class="flex flex-col gap-6 mt-2">
 
-| Term | Data | Code | Goal |
-| :--- | :--- | :--- | :--- |
-| **Reproducible** | Same | Same | Recreate the exact same results. |
-| **Replicable** | New | Same | See if findings hold in new contexts. |
-| **Robust** | Same | New | Ensure findings aren't artifacts of one tool. |
+<div class="grid grid-cols-3 gap-4 text-xs">
 
-<br>
+  <div class="flex flex-col gap-2 p-4 rounded border border-gray-200 bg-gray-50">
+    <span class="font-mono font-bold text-gray-400 text-[10px] uppercase tracking-wide">Reproducible</span>
+    <div class="flex gap-3 text-[11px]">
+      <span class="bg-gray-200 text-gray-600 rounded px-1.5 py-0.5 font-mono">Same data</span>
+      <span class="bg-gray-200 text-gray-600 rounded px-1.5 py-0.5 font-mono">Same code</span>
+    </div>
+    <p class="text-gray-600 leading-relaxed">Re-run the exact same analysis and get the exact same results. The baseline of scientific integrity.</p>
+  </div>
 
-### Our Focus: **Computational Reproducibility**
-Controlling the **runtime environment** to ensure that "Same Code" actually behaves as "Same Code" across different machines and years.
+  <div class="flex flex-col gap-2 p-4 rounded border border-gray-200 bg-gray-50">
+    <span class="font-mono font-bold text-gray-400 text-[10px] uppercase tracking-wide">Replicable</span>
+    <div class="flex gap-3 text-[11px]">
+      <span class="bg-gray-200 text-gray-600 rounded px-1.5 py-0.5 font-mono">New data</span>
+      <span class="bg-gray-200 text-gray-600 rounded px-1.5 py-0.5 font-mono">Same code</span>
+    </div>
+    <p class="text-gray-600 leading-relaxed">Apply the same method to new data and see if findings hold. Tests generalisability.</p>
+  </div>
+
+  <div class="flex flex-col gap-2 p-4 rounded border border-gray-200 bg-gray-50">
+    <span class="font-mono font-bold text-gray-400 text-[10px] uppercase tracking-wide">Robust</span>
+    <div class="flex gap-3 text-[11px]">
+      <span class="bg-gray-200 text-gray-600 rounded px-1.5 py-0.5 font-mono">Same data</span>
+      <span class="bg-gray-200 text-gray-600 rounded px-1.5 py-0.5 font-mono">New code</span>
+    </div>
+    <p class="text-gray-600 leading-relaxed">Re-implement the analysis independently. Confirms findings are not artifacts of one tool or library.</p>
+  </div>
+
+</div>
+
+<div class="p-4 rounded-lg border border-blue-200 bg-blue-50">
+  <p class="text-xs text-blue-600 font-semibold uppercase tracking-wide mb-3">Our Focus: Computational Reproducibility</p>
+  <div class="flex flex-col gap-1.5 text-sm">
+    <div class="flex gap-2">
+      <span class="text-blue-400 shrink-0">→</span>
+      <span class="text-gray-700">Before asking whether results <em>replicate</em> or are <em>robust</em>, we need to be able to <strong>re-run the code at all</strong></span>
+    </div>
+    <div class="flex gap-2">
+      <span class="text-blue-400 shrink-0">→</span>
+      <span class="text-gray-700">The <strong>runtime environment</strong> is the prerequisite — OS, libraries, compiler, hardware all affect results</span>
+    </div>
+    <div class="flex gap-2">
+      <span class="text-blue-400 shrink-0">→</span>
+      <span class="text-gray-700">"Same code" must actually behave as "same code" <strong>across machines and years</strong></span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!--
+Before we dive into the technical details, let's align on terminology — because "reproducibility" is one of those words that gets used to mean three quite different things, and the distinction matters.
+
+The first is reproducibility in the strict sense — same data, same code, same results. This is the absolute baseline. If I give you my dataset and my code and you cannot get the same numbers I published, something is fundamentally broken. This is what we are primarily concerned with today.
+
+The second is replicability — same code, new data. The method travels, but the data doesn't. This is about whether your approach generalises beyond the specific dataset you used. Important scientifically, but it assumes you can already run the code in the first place.
+
+The third is robustness — same data, but a completely independent reimplementation. Someone else writes the analysis from scratch and checks whether they reach the same conclusions. This is the gold standard of scientific validation, but again — it presupposes that the original result is at minimum reproducible.
+
+The key point is this: reproducibility is the prerequisite for everything else. You cannot meaningfully ask whether a result replicates or is robust if you cannot even re-run the original code. That is the problem we are focused on — and it turns out that just being able to re-run the code is already a significant unsolved challenge in practice.
+
+The runtime environment is the hidden variable. Same code on a different machine, a different OS, a different version of numpy or glibc — and you may get different results, or no results at all. Our focus is on making the environment itself a first-class, reproducible artifact.
+-->
 
 ---
 layout: default
@@ -160,70 +216,78 @@ layout: default
 
 # Reproducibility Levels
 
-<div class="grid grid-cols-2 gap-x-6 gap-y-4 text-[11px] leading-tight">
+<div class="flex flex-col gap-1.5 text-[11px] leading-tight">
 
 <!-- Level 1 -->
-<div v-click="1" class="border-l-4 border-red-500 p-2 bg-red-50 dark:bg-red-900/10">
-  <strong>Level 1: Natural Language description only, for example in a README file.</strong>
-  <div class="grid grid-cols-3 gap-2 mt-1">
-    <code class="opacity-70">"This project requires python 3.10 and numpy."</code>
-    <span class="text-red-600">❌ Problem: Human error; "latest" version changes daily.</span>
-    <span class="text-green-600">✅ Improvement: Create a formal dependency file allowing programmatic installation.</span>
+<div v-click="1" class="grid grid-cols-[90px_1fr_1fr_1fr] gap-3 items-start rounded px-3 py-2 bg-red-50 border border-red-200">
+  <span class="font-mono font-bold text-red-600 text-[10px] bg-red-100 border border-red-300 rounded px-1.5 py-0.5 w-fit">LVL 01</span>
+  <div class="font-semibold text-gray-800">Natural language only <span class="text-gray-400 font-normal">(README)</span></div>
+  <code class="text-gray-500">"This project requires python 3.10 and numpy."</code>
+  <div class="flex flex-col gap-0.5">
+    <span class="text-red-600">❌ Likely unprecise and incomplete.</span>
+    <span class="text-green-700">✅ Create a formal dependency file.</span>
   </div>
 </div>
 
 <!-- Level 2 -->
-<div v-click="2" class="border-l-4 border-orange-500 p-2 bg-orange-50 dark:bg-orange-900/10">
-  <strong>Level 2: Dependencies are declared in a manifest file, for example requirements.txt.</strong>
-  <div class="grid grid-cols-3 gap-2 mt-1">
-    <code class="opacity-70">requirements.txt: <br>pandas</code>
-    <span class="text-red-600">❌ Problem: Installs different versions on different days.</span>
-    <span class="text-green-600">✅ Improvement: Pin the required versions of each dependency (<code>pandas==2.1.0</code>).</span>
+<div v-click="2" class="grid grid-cols-[90px_1fr_1fr_1fr] gap-3 items-start rounded px-3 py-2 bg-orange-50 border border-orange-200">
+  <span class="font-mono font-bold text-orange-600 text-[10px] bg-orange-100 border border-orange-300 rounded px-1.5 py-0.5 w-fit">LVL 02</span>
+  <div class="font-semibold text-gray-800">Manifest file <span class="text-gray-400 font-normal">(requirements.txt)</span></div>
+  <code class="text-gray-500">requirements.txt:<br/>pandas</code>
+  <div class="flex flex-col gap-0.5">
+    <span class="text-red-600">❌ Installs different versions on different days.</span>
+    <span class="text-green-700">✅ Pin required versions (<code>pandas==2.1.0</code>).</span>
   </div>
 </div>
 
 <!-- Level 3 -->
-<div v-click="3" class="border-l-4 border-yellow-500 p-2 bg-yellow-50 dark:bg-yellow-900/10">
-  <strong>Level 3: Versions of Top-Level dependencies are specified.</strong>
-  <div class="grid grid-cols-3 gap-2 mt-1">
-    <code class="opacity-70">pandas==2.1.0</code>
-    <span class="text-red-600">❌ Problem: Versions of not declared transitive dependencies are not specified.</span>
-    <span class="text-green-600">✅ Improvement: Use a <strong>Lockfile</strong> (<code>poetry.lock</code>).</span>
+<div v-click="3" class="grid grid-cols-[90px_1fr_1fr_1fr] gap-3 items-start rounded px-3 py-2 bg-yellow-50 border border-yellow-200">
+  <span class="font-mono font-bold text-yellow-700 text-[10px] bg-yellow-100 border border-yellow-300 rounded px-1.5 py-0.5 w-fit">LVL 03</span>
+  <div class="font-semibold text-gray-800">Top-level versions pinned</div>
+  <code class="text-gray-500">pandas==2.1.0</code>
+  <div class="flex flex-col gap-0.5">
+    <span class="text-red-600">❌ Transitive dependencies still float.</span>
+    <span class="text-green-700">✅ Use a <strong>Lockfile</strong> (<code>poetry.lock</code>).</span>
   </div>
 </div>
 
 <!-- Level 4 -->
-<div v-click="5" class="border-l-4 border-blue-500 p-2 bg-blue-50 dark:bg-blue-900/10">
-  <strong>Level 4: Dependencies are "locked".</strong>
-  <div class="grid grid-cols-3 gap-2 mt-1">
-    <code class="opacity-70">poetry.lock</code>
-    <span class="text-red-600">❌ Problem: Language specific lock files do not include system dependencies (libblas, glibc, CUDA).</span>
-    <span class="text-green-600">✅ Improvement: Add <strong>Containers</strong> or <strong>VMs</strong> to package OS and system libraries.</span>
+<div v-click="5" class="grid grid-cols-[90px_1fr_1fr_1fr] gap-3 items-start rounded px-3 py-2 bg-blue-50 border border-blue-200">
+  <span class="font-mono font-bold text-blue-600 text-[10px] bg-blue-100 border border-blue-300 rounded px-1.5 py-0.5 w-fit">LVL 04</span>
+  <div class="font-semibold text-gray-800">Dependencies locked</div>
+  <code class="text-gray-500">poetry.lock</code>
+  <div class="flex flex-col gap-0.5">
+    <span class="text-red-600">❌ No system deps (<code>libblas</code>, <code>glibc</code>, CUDA).</span>
+    <span class="text-green-700">✅ Add <strong>Containers</strong> or <strong>VMs</strong>.</span>
   </div>
 </div>
 
 <!-- Level 5 -->
-<div v-click="6" class="border-l-4 border-green-500 p-2 bg-green-50 dark:bg-green-900/10">
-  <strong>Level 5: Container environments like Docker.</strong>
-  <div class="grid grid-cols-3 gap-2 mt-1">
-    <code class="opacity-70">FROM python:3.9</code>
-    <span class="text-red-600">❌ Problem: Base image and apt-get are non-deterministic.</span>
-    <span class="text-green-600">✅ Improvement: Functional declarative system environment specifications for example with <strong>nix</strong>.</span>
+<div v-click="6" class="grid grid-cols-[90px_1fr_1fr_1fr] gap-3 items-start rounded px-3 py-2 bg-emerald-50 border border-emerald-200">
+  <span class="font-mono font-bold text-emerald-700 text-[10px] bg-emerald-100 border border-emerald-300 rounded px-1.5 py-0.5 w-fit">LVL 05</span>
+  <div class="font-semibold text-gray-800">Container environments <span class="text-gray-400 font-normal">(Docker)</span></div>
+  <code class="text-gray-500">FROM python:3.9</code>
+  <div class="flex flex-col gap-0.5">
+    <span class="text-red-600">❌ Base image and apt-get are non-deterministic.</span>
+    <span class="text-green-700">✅ Use declarative specs e.g. <strong>nix</strong>.</span>
   </div>
 </div>
 
 <!-- Level 6 -->
-<div v-click="8" class="border-l-4 border-green-500 p-2 bg-green-50 dark:bg-green-900/10">
-  <strong>Level 6: Declarative System Environment Specification for example with nix.</strong>
-  <div class="grid grid-cols-3 gap-2 mt-1">
-    <code class="opacity-70">buildInputs = [
-            pythonEnv
-            pkgs.git
-            pkgs.zlib
-          ];</code>
-    <span class="text-red-600">❌ Problem: Availability of source code of the various packages</span>
-    <span class="text-green-600">✅ Improvement: Long time archives like <strong>Software Heritage Foundation</strong>.</span>
+<div v-click="8" class="grid grid-cols-[90px_1fr_1fr_1fr] gap-3 items-start rounded px-3 py-2 bg-teal-50 border border-teal-200">
+  <span class="font-mono font-bold text-teal-700 text-[10px] bg-teal-100 border border-teal-300 rounded px-1.5 py-0.5 w-fit">LVL 06</span>
+  <div class="font-semibold text-gray-800">Declarative system env <span class="text-gray-400 font-normal">(nix)</span></div>
+  <code class="text-gray-500">buildInputs = [<br/>  pythonEnv pkgs.git<br/>  pkgs.zlib<br/>];</code>
+  <div class="flex flex-col gap-0.5">
+    <span class="text-red-600">❌ Availability of source code of packages.</span>
+    <span class="text-green-700">✅ Long-term archives: <strong>Software Heritage Foundation</strong>.</span>
   </div>
+</div>
+
+<!-- Beyond -->
+<div v-click="10" class="grid grid-cols-[90px_1fr] gap-3 items-center rounded px-3 py-2 bg-purple-50 border border-purple-200">
+  <span class="font-mono font-bold text-purple-700 text-[10px] bg-purple-100 border border-purple-300 rounded px-1.5 py-0.5 w-fit">BEYOND</span>
+  <div class="text-gray-600">Long-term archive of packages + hardware environment. Also env vars and sources of non-determinism like random number seeds.</div>
 </div>
 
 </div>
@@ -242,14 +306,14 @@ layout: default
 
   <div>
   requirements.txt
-```python
+```text
   django==6.0.2
   numpy==2.4.2
   pandas==3.0.1
   pipdeptree==2.31.0
 ```
   pipdeptree
-```yaml
+```text
   Django==6.0.2
   ├── asgiref [required: >=3.9.1, installed: 3.11.1]
   └── sqlparse [required: >=0.5.0, installed: 0.5.5]
@@ -265,29 +329,29 @@ layout: default
 
   <div>
   uv.lock
-```toml
-  [[package]]
-  name = "asgiref"
-  version = "3.11.1"
-  source = { registry = "https://pypi.org/simple" }
-  sdist = { url = "https://files.pythonhosted.org/packages/63/40/f03da1264ae8f7cfdbf9146542e5e7e8100a4c66ab48e791df9a03d3f6c0/asgiref-3.11.1.tar.gz", hash = "sha256:5f184dc43b7e763efe848065441eac62229c9f7b0475f41f80e207a114eda4ce", size = 38550 }
-  wheels = [
-    { url = "https://files.pythonhosted.org/packages/5c/0a/a72d10ed65068e115044937873362e6e32fab1b7dce0046aeb224682c989/asgiref-3.11.1-py3-none-any.whl", hash = "sha256:e8667a091e69529631969fd45dc268fa79b99c92c5fcdda727757e52146ec133", size = 24345 },
-  ]
+```text
+[[package]]
+name = "asgiref"
+version = "3.11.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/...", hash = "sha256:5f18...", size = 38550 }
+wheels = [
+  { url = "https://files.pythonhosted.org/...", hash = "sha256:e866...", size = 24345 },
+]
 
-  [[package]]
-  name = "django"
-  version = "6.0.2"
-  source = { registry = "https://pypi.org/simple" }
-  dependencies = [
-    { name = "asgiref" },
-    { name = "sqlparse" },
-    { name = "tzdata", marker = "sys_platform == 'win32'" },
-  ]
-  sdist = { url = "https://files.pythonhosted.org/packages/26/3e/a1c4207c5dea4697b7a3387e26584919ba987d8f9320f59dc0b5c557a4eb/django-6.0.2.tar.gz", hash = "sha256:3046a53b0e40d4b676c3b774c73411d7184ae2745fe8ce5e45c0f33d3ddb71a7", size = 10886874 }
-  wheels = [
-    { url = "https://files.pythonhosted.org/packages/96/ba/a6e2992bc5b8c688249c00ea48cb1b7a9bc09839328c81dc603671460928/django-6.0.2-py3-none-any.whl", hash = "sha256:610dd3b13d15ec3f1e1d257caedd751db8033c5ad8ea0e2d1219a8acf446ecc6", size = 8339381 },
-  ]
+[[package]]
+name = "django"
+version = "6.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+  { name = "asgiref" },
+  { name = "sqlparse" },
+  { name = "tzdata", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/...", hash = "sha256:3046...", size = 10886874 }
+wheels = [
+  { url = "https://files.pythonhosted.org/...", hash = "sha256:610d...", size = 8339381 },
+]
 ```
 </div>
   </div>
@@ -321,8 +385,9 @@ RUN poetry install --no-root                            # ✅ Python dependencie
   </div>
   
   <!-- Content for Level 5 -->
-  <div v-if="$clicks === 9" class="grid grid-cols-2 gap-4">
-  <div>
+  <div v-if="$clicks === 9" class="grid grid-cols-2 gap-6 h-full">
+
+<div>
 ```nix
 {
   inputs = {
@@ -332,16 +397,13 @@ RUN poetry install --no-root                            # ✅ Python dependencie
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-        };
-      in
-      {
+        pkgs = import nixpkgs { inherit system; };
+      in {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             git
             docker-client
-            nodejs_25        
+            nodejs_25
             python313Packages.uv
             kubectl
           ];
@@ -349,34 +411,68 @@ RUN poetry install --no-root                            # ✅ Python dependencie
       });
 }
 ```
-  </div>
-
-  <div class="flex flex-col justify-center space-y-3 text-sm">
-
-  ### Declarative System Environment with Nix
-  **Nix** is a purely functional package manager and build system. Instead of mutating global state, every package lives in its own isolated path in `/nix/store`.
-
-  ### ✅ Advantages
-  - **Reproducible** — the same flake produces bit-for-bit identical environments on any machine
-  - **Declarative** — your entire dev environment is code, version-controlled alongside your project
-  - **No conflicts** — multiple versions of the same tool coexist without clashing
-  - **Cross-platform** — `eachDefaultSystem` handles Linux & macOS automatically
-  - **Zero setup drift** — new team members run `nix develop` and get the exact same shell instantly
-
-  </div>
-
-  </div>
 
 </div>
 
+<div class="flex flex-col justify-center gap-4 text-sm">
 
-<!-- Level 6 -->
-<div v-click="10" class="mt-4 border-l-4 border-green-500 p-2 bg-green-50 dark:bg-green-900/10">
-  <strong>Beyond: Long time archive of packages + Hardware environment.</strong>
-  <div class="grid grid-cols-3 gap-2 mt-1">
-    Also the matter of environment vars and sources of non determinism like random number seeds.
+<div>
+  <h3 class="text-base font-bold text-gray-800 mb-1">Declarative System Environment with Nix</h3>
+  <p class="text-gray-600"><strong>Nix</strong> is a purely functional package manager. Instead of mutating global state, every package lives in its own isolated path in <code>/nix/store</code>.</p>
+</div>
+
+<div>
+  <h4 class="font-semibold text-gray-700 mb-2 uppercase tracking-wide text-xs">Advantages</h4>
+  <div class="flex flex-col gap-1.5">
+    <div class="flex gap-2"><span class="text-teal-600 font-semibold w-28 shrink-0">Reproducible</span><span class="text-gray-600">The same flake produces identical environments on any machine</span></div>
+    <div class="flex gap-2"><span class="text-teal-600 font-semibold w-28 shrink-0">Declarative</span><span class="text-gray-600">Your entire dev environment is code, version-controlled with your project</span></div>
+    <div class="flex gap-2"><span class="text-teal-600 font-semibold w-28 shrink-0">No conflicts</span><span class="text-gray-600">Multiple versions of the same tool coexist without clashing</span></div>
+    <div class="flex gap-2"><span class="text-teal-600 font-semibold w-28 shrink-0">Cross-platform</span><span class="text-gray-600"><code>eachDefaultSystem</code> handles Linux & macOS automatically</span></div>
+    <div class="flex gap-2"><span class="text-teal-600 font-semibold w-28 shrink-0">Zero drift</span><span class="text-gray-600">New team members run <code>nix develop</code> and get the exact same shell</span></div>
   </div>
 </div>
+
+</div>
+
+</div>
+
+</div>
+
+<!--
+This slide walks through the reproducibility ladder — six levels, each one addressing a specific failure mode that the previous level leaves open. Let's go through them one by one.
+
+[CLICK - LVL 01]
+The lowest level is natural language. A README that says "this project requires Python 3.10 and numpy" is better than nothing, but it is not executable — it relies on the reader correctly interpreting and manually recreating the environment. What version of numpy? Which OS? What happens when numpy releases a new major version next month? This is where most research code still lives.
+
+[CLICK - LVL 02]
+A step up is a manifest file — a requirements.txt or similar. Now installation is at least automated. But if you just list "pandas" without a version, pip will grab whatever is latest on the day someone runs it. That may be a completely different version than what you used, and it can silently change behaviour.
+
+[CLICK - LVL 03]
+Pinning top-level versions is better — pandas==2.1.0 means you always get pandas 2.1.0. But pandas itself has dependencies, and those are not pinned. The transitive graph — everything that pandas pulls in — still floats freely.
+
+[CLICK - show lockfile detail overlay]
+This is what a lockfile solves. On the left you can see a simple requirements.txt with four packages. Run pipdeptree on it and you see the full dependency graph — asgiref, sqlparse, numpy, python-dateutil, six, and more — none of which were in the original file. On the right is a uv.lock — it captures every package in the graph, its exact version, its source registry, and a cryptographic hash. If the hash doesn't match, installation fails. This is reproducibility at the Python level.
+
+[CLICK - LVL 04]
+Level 4 is locked dependencies. The full graph is pinned and verified. This is a significant improvement — but it only covers Python packages. System-level dependencies like libblas, glibc, or CUDA are completely outside the picture. Those are installed on the host machine, vary between systems, and can absolutely affect numerical results.
+
+[CLICK - LVL 05]
+Containers like Docker address this. You package not just the Python environment but the entire OS userspace — the system libraries, the runtime, everything. In principle this should give you a reproducible environment anywhere Docker runs.
+
+[CLICK - show Docker detail overlay]
+In practice, Dockerfiles require careful discipline. A naive Dockerfile with "FROM python:3.9" actually moves — that tag gets updated every time Python releases a patch. apt-get install without pinning fetches whatever Debian has today. pip install without a lockfile floats. The improved version on the right pins the base image to an immutable digest, pins the apt package version, and uses a lockfile for Python dependencies. It works, but it is fragile by default — you have to know to do all of this.
+
+[CLICK - LVL 06]
+Nix takes a fundamentally different approach. Instead of imperatively building an environment that can drift, you declare it as a pure function. Every package in the Nix store is identified by a cryptographic hash of everything that produced it — the source, the compiler, the flags. Nothing is ever mutated. The same flake always produces the same environment, on any machine, on any day.
+
+[CLICK - show Nix detail overlay]
+The flake on the left is a complete, reproducible dev environment. You declare your inputs — a pinned nixpkgs commit — and describe your shell. Anyone runs `nix develop` and gets exactly this: same git, same Node, same Python tooling, same system libraries. The key properties are reproducibility across machines, no conflicts because nothing is global, and a fully declarative environment that lives in version control alongside the code. The environment is the code.
+
+The remaining open problem is the long-term availability of the packages themselves. Nixpkgs pins to a specific commit, but if upstream source repositories disappear, you still cannot rebuild. That is what the next level — long-term archiving — addresses.
+
+[CLICK - BEYOND]
+Beyond the technical environment, there are further sources of non-determinism that even Nix does not solve: hardware differences, environment variables, and non-deterministic algorithms — particularly relevant in ML where random seeds, GPU floating point behaviour, and distributed training can all introduce variance. Full reproducibility ultimately also requires hardware documentation and careful seed management.
+-->
 
 ---
 
@@ -498,3 +594,89 @@ graph TD
 
 # REE service
 
+asd
+
+---
+layout: default
+---
+
+# Model for a Reusable Execution Environment
+
+<style>
+.field-grid { display: grid; grid-template-columns: 150px 90px 1fr; gap: 0.5rem; align-items: start; }
+</style>
+
+<div class="grid grid-cols-2 gap-8 mt-2">
+<div>
+
+<div class="flex flex-col gap-1.5 text-xs font-mono">
+
+<div class="field-grid px-2 py-1.5 rounded bg-gray-50 border border-gray-200">
+<span class="font-bold text-gray-800">name</span>
+<span class="text-blue-600">str</span>
+<span class="text-gray-500 font-sans">Human-readable identifier</span>
+</div>
+
+<div class="field-grid px-2 py-1.5 rounded bg-gray-50 border border-gray-200">
+<span class="font-bold text-gray-800">source_repository</span>
+<span class="text-blue-600">str</span>
+<span class="text-gray-500 font-sans">URL of the source code repository</span>
+</div>
+
+<div class="field-grid px-2 py-1.5 rounded bg-gray-50 border border-gray-200">
+<span class="font-bold text-gray-800">runtime</span>
+<span class="text-blue-600">Path | None</span>
+<span class="text-gray-500 font-sans">Path to a pre-built runtime artifact, if available</span>
+</div>
+
+<div class="field-grid px-2 py-1.5 rounded bg-amber-50 border border-amber-300">
+<span class="font-bold text-amber-800">build_runtime_script</span>
+<span class="text-blue-600">Path</span>
+<span class="text-gray-700 font-sans"><strong>Builds the environment from scratch</strong> — required</span>
+</div>
+
+<div class="field-grid px-2 py-1.5 rounded bg-gray-50 border border-gray-200">
+<span class="font-bold text-gray-800">sbom</span>
+<span class="text-blue-600">Path</span>
+<span class="text-gray-500 font-sans">Software Bill of Materials — full package inventory</span>
+</div>
+
+<div class="field-grid px-2 py-1.5 rounded bg-gray-50 border border-gray-200">
+<span class="font-bold text-gray-800">hardware_description</span>
+<span class="text-blue-600">dict</span>
+<span class="text-gray-500 font-sans">CPU, GPU, memory, OS — documents execution hardware</span>
+</div>
+
+<div class="field-grid px-2 py-1.5 rounded bg-amber-50 border border-amber-300">
+<span class="font-bold text-amber-800">validate_reproducibility_script</span>
+<span class="text-blue-600">Path</span>
+<span class="text-gray-700 font-sans"><strong>Verifies rebuilt env matches the SBOM</strong> — required</span>
+</div>
+
+</div>
+</div>
+
+<div class="flex flex-col gap-3 justify-center text-xs">
+<p class="text-xs text-gray-500 uppercase tracking-wide font-semibold">Enforced Workflow</p>
+
+<div class="flex items-start gap-3 p-3 rounded border border-amber-300 bg-amber-50">
+<span class="font-mono font-bold text-amber-700 shrink-0">01 BUILD</span>
+<span class="text-gray-600">Run <code>build_runtime_script</code> to construct the environment from source. Anyone can rebuild it from scratch.</span>
+</div>
+
+<div class="text-center text-gray-300">↓</div>
+
+<div class="flex items-start gap-3 p-3 rounded border border-blue-200 bg-blue-50">
+<span class="font-mono font-bold text-blue-600 shrink-0">02 CAPTURE</span>
+<span class="text-gray-600">Record every package, version, and hash in the Software Bill of Materials.</span>
+</div>
+
+<div class="text-center text-gray-300">↓</div>
+
+<div class="flex items-start gap-3 p-3 rounded border border-amber-300 bg-amber-50">
+<span class="font-mono font-bold text-amber-700 shrink-0">03 VALIDATE</span>
+<span class="text-gray-600">Run <code>validate_reproducibility_script</code> to confirm the rebuilt environment matches the stored SBOM exactly.</span>
+</div>
+
+</div>
+</div>
