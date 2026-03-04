@@ -305,14 +305,14 @@ layout: default
   <div v-if="$clicks === 4" class="grid grid-cols-2 gap-4">
 
   <div>
-  requirements.txt
+  requirements.txt — what is declared
 ```text
   django==6.0.2
   numpy==2.4.2
   pandas==3.0.1
   pipdeptree==2.31.0
 ```
-  pipdeptree
+  pipdeptree — what actually gets installed
 ```text
   Django==6.0.2
   ├── asgiref [required: >=3.9.1, installed: 3.11.1]
@@ -328,8 +328,9 @@ layout: default
   </div>
 
   <div>
-  uv.lock
+  uv.lock — what a lockfile captures
 ```text
+...
 [[package]]
 name = "asgiref"
 version = "3.11.1"
@@ -338,7 +339,6 @@ sdist = { url = "https://files.pythonhosted.org/...", hash = "sha256:5f18...", s
 wheels = [
   { url = "https://files.pythonhosted.org/...", hash = "sha256:e866...", size = 24345 },
 ]
-
 [[package]]
 name = "django"
 version = "6.0.2"
@@ -352,37 +352,74 @@ sdist = { url = "https://files.pythonhosted.org/...", hash = "sha256:3046...", s
 wheels = [
   { url = "https://files.pythonhosted.org/...", hash = "sha256:610d...", size = 8339381 },
 ]
+...
 ```
 </div>
   </div>
   
   <!-- Content for Level 5 -->
-  <div v-if="$clicks === 7">
-  
-  # Dockerfiles are not perfect
+  <div v-if="$clicks === 7" class="flex flex-col gap-1 w-full h-full">
 
-### The Problematic Dockerfile
+  <div>
+    <h2 class="text-lg font-bold text-gray-800">Dockerfiles are not reproducible by default</h2>
+  </div>
 
+  <div class="grid grid-cols-2 gap-6 flex-1 text-xs">
+    <div class="flex flex-col gap-3">
+      <p class="font-semibold text-red-600 uppercase tracking-wide text-[10px]">Problematic Dockerfile</p>
 ```dockerfile
-FROM python:3.9                                         # ❌ Moves every time Python updates
-RUN apt-get update && apt-get install -y libblas-dev    # ❌ Fetches latest binary from Debian
+FROM python:3.9
+RUN apt-get update && apt-get install -y libblas-dev
 COPY . .
-RUN pip install pandas==2.1.0                           # ❌ No lockfile; transitive deps float
+RUN pip install pandas==2.1.0
 ```
-
-### Improved Dockerfile
+      <div class="flex flex-col gap-1.5">
+        <div class="flex gap-2 p-2 rounded border border-red-200 bg-red-50 text-red-800">
+          <span class="shrink-0 font-mono font-bold">FROM</span>
+          <span><code>python:3.9</code> is a moving tag — it gets updated silently every time Python releases a patch</span>
+        </div>
+        <div class="flex gap-2 p-2 rounded border border-red-200 bg-red-50 text-red-800">
+          <span class="shrink-0 font-mono font-bold">RUN</span>
+          <span><code>apt-get install libblas-dev</code> with no version fetches whatever Debian serves today</span>
+        </div>
+        <div class="flex gap-2 p-2 rounded border border-red-200 bg-red-50 text-red-800">
+          <span class="shrink-0 font-mono font-bold">pip</span>
+          <span>No lockfile — transitive dependencies float freely</span>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col gap-3">
+      <p class="font-semibold text-green-700 uppercase tracking-wide text-[10px]">Improved Dockerfile</p>
 ```dockerfile
-FROM python:3.9.18@sha256:c3b1...                       # ✅ Immutable base
+FROM python:3.9.18@sha256:c3b1...
 RUN apt-get update && apt-get install -y \
-    libblas-dev=3.11.0                                  # ✅ Pinned dependencies
+    libblas-dev=3.11.0
 COPY poetry.lock pyproject.toml ./
-RUN poetry install --no-root                            # ✅ Python dependencies from lock file
+RUN poetry install --no-root
 ```
-
-
---> Working with Dockerfiles requires careful attention to make reproducible
+      <div class="flex flex-col gap-1.5">
+        <div class="flex gap-2 p-2 rounded border border-green-200 bg-green-50 text-green-800">
+          <span class="shrink-0 font-mono font-bold">FROM</span>
+          <span>Pinned to an immutable digest — this exact image, forever</span>
+        </div>
+        <div class="flex gap-2 p-2 rounded border border-green-200 bg-green-50 text-green-800">
+          <span class="shrink-0 font-mono font-bold">RUN</span>
+          <span><code>libblas-dev=3.11.0</code> — explicit system package version</span>
+        </div>
+        <div class="flex gap-2 p-2 rounded border border-green-200 bg-green-50 text-green-800">
+          <span class="shrink-0 font-mono font-bold">poetry</span>
+          <span>Installs from a lockfile — every transitive dependency is pinned and verified</span>
+        </div>
+      </div>
+    </div>
 
   </div>
+
+  <div class="p-2 rounded border border-gray-200 bg-gray-50 text-gray-600 text-xs">
+    Docker can be made more reproducible, but it requires deliberate effort.
+  </div>
+
+</div>
   
   <!-- Content for Level 5 -->
   <div v-if="$clicks === 9" class="grid grid-cols-2 gap-6 h-full">
@@ -545,56 +582,6 @@ The takeaway from these charts is simple: dependency mismanagement is the norm, 
 # Reusable Execution Environment (REE)
 
 <img src="/RDMC_and_REE.png"/>
-
----
-layout: two-cols
----
-
-# Modeling a Reusable Execution Environment
-
-
-::right::
-ads
-
-::left::
-
-```mermaid {scale: 0.4}
-graph TD
-    subgraph Identity ["1. Identity & Metadata"]
-        Name[Name]
-        ID[Persisten Identifier]
-        Name ~~~ ID
-    end
-
-    subgraph Inputs ["2. Source Project"]
-        Repo[Origin URL]
-        Files[Project Files]
-        Repo ~~~ Files
-    end
-
-    subgraph Runtime ["3. Runtime"]
-        RName[Runtime]
-        BScript[Build Runtime Script]
-        SBOM[Software Bill of Materials]
-        RName ~~~ BScript ~~~ SBOM
-    end
-
-    subgraph Audit ["4. Validation"]
-        VScript[Validate Runtime Script]
-    end
-
-    Identity --- Inputs
-    Inputs --- Runtime
-    Runtime --- Audit
-
-    style Identity fill:#f9f,stroke:#333
-```
-
----
-
-# REE service
-
-asd
 
 ---
 layout: default
