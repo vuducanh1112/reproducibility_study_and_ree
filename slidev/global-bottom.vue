@@ -1,17 +1,12 @@
 <!-- global-bottom.vue -->
 <template>
-  <footer 
-    v-if="$nav.currentLayout !== 'cover'" 
-    class="absolute bottom-0 left-0 right-0 p-3 flex justify-between items-center text-[10px] text-gray-400 opacity-60 uppercase tracking-widest"
+  <footer
+    v-if="$nav.currentLayout !== 'cover'"
+    class="absolute bottom-0 left-0 right-0 h-8 flex items-center justify-between px-6 border-t border-gray-100 text-[10px] text-gray-400 tracking-wide"
   >
-    <!-- Left: Title -->
-    <div>{{ $slidev.configs.title }}</div>
-
-    <!-- Center: Author(s) -->
-    <div>{{ $slidev.configs.author }}</div>
-
-    <!-- Right: Page Number -->
-    <div>
+    <div class="font-semibold text-gray-500 uppercase tracking-widest">{{ $slidev.configs.title }}</div>
+    <div class="font-mono">Duc · AnhDuc.Vu@paluno.uni-due.de</div>
+    <div class="font-mono tabular-nums">
       <SlideCurrentNo /> / <SlidesTotal />
     </div>
   </footer>
