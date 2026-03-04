@@ -1,12 +1,8 @@
----
-# try also 'default' to start simple
+--- 
 theme: seriph
-# random image from a curated Unsplash collection by Anthony
-# like them? see https://unsplash.com/collections/94734566/slidev
-background: https://cover.sli.dev
-# some information about your slides (markdown enabled)
 title: Reproducibility in Scientific Software Repositories and the Reusable Execution Environment
-author: Vu, Blessing, Goedicke
+author: Vu, Blessing, Dragoljic, Goedicke
+layout: center
 info: |
   ## Slidev Starter Template
   Presentation slides for developers.
@@ -25,667 +21,121 @@ mdc: true
 duration: 35min
 ---
 
-# Welcome to Slidev
-
-Presentation slides for developers
-
-<div @click="$slidev.nav.next" class="mt-12 py-1" hover:bg="white op-10">
-  Press Space for next page <carbon:arrow-right />
-</div>
-
-<div class="abs-br m-6 text-xl">
-  <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="slidev-icon-btn">
-    <carbon:edit />
-  </button>
-  <a href="https://github.com/slidevjs/slidev" target="_blank" class="slidev-icon-btn">
-    <carbon:logo-github />
-  </a>
-</div>
-
-<!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
-
----
-transition: fade-out
----
-
-# What is Slidev?
-
-Slidev is a slides maker and presenter designed for developers, consist of the following features
-
-- 📝 **Text-based** - focus on the content with Markdown, and then style them later
-- 🎨 **Themable** - themes can be shared and re-used as npm packages
-- 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
-- 🤹 **Interactive** - embed Vue components to enhance your expressions
-- 🎥 **Recording** - built-in recording and camera view
-- 📤 **Portable** - export to PDF, PPTX, PNGs, or even a hostable SPA
-- 🛠 **Hackable** - virtually anything that's possible on a webpage is possible in Slidev
-<br>
-<br>
-
-Read more about [Why Slidev?](https://sli.dev/guide/why)
-
-<!--
-You can have `style` tag in markdown to override the style for the current page.
-Learn more: https://sli.dev/features/slide-scope-style
--->
-
-<style>
-h1 {
-  background-color: #2B90B6;
-  background-image: linear-gradient(45deg, #4EC5D4 10%, #146b8c 20%);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
-
-<!--
-Here is another comment.
--->
-
----
-transition: slide-up
-level: 2
----
-
-# Navigation
-
-Hover on the bottom-left corner to see the navigation's controls panel, [learn more](https://sli.dev/guide/ui#navigation-bar)
-
-## Keyboard Shortcuts
-
-|                                                     |                             |
-| --------------------------------------------------- | --------------------------- |
-| <kbd>right</kbd> / <kbd>space</kbd>                 | next animation or slide     |
-| <kbd>left</kbd>  / <kbd>shift</kbd><kbd>space</kbd> | previous animation or slide |
-| <kbd>up</kbd>                                       | previous slide              |
-| <kbd>down</kbd>                                     | next slide                  |
-
-<!-- https://sli.dev/guide/animations.html#click-animation -->
-<img
-  v-click
-  class="absolute -bottom-9 -left-7 w-80 opacity-50"
-  src="https://sli.dev/assets/arrow-bottom-left.svg"
-  alt=""
-/>
-<p v-after class="absolute bottom-23 left-45 opacity-30 transform -rotate-10">Here!</p>
-
----
-layout: two-cols
-layoutClass: gap-16
----
-
-# Table of contents
-
-You can use the `Toc` component to generate a table of contents for your slides:
-
-```html
-<Toc minDepth="1" maxDepth="1" />
-```
-
-The title will be inferred from your slide content, or you can override it with `title` and `level` in your frontmatter.
-
-::right::
-
-<Toc text-sm minDepth="1" maxDepth="2" />
-
----
-layout: image-right
-image: https://cover.sli.dev
----
-
-# Code
-
-Use code snippets and get the highlighting directly, and even types hover!
-
-```ts [filename-example.ts] {all|4|6|6-7|9|all} twoslash
-// TwoSlash enables TypeScript hover information
-// and errors in markdown code blocks
-// More at https://shiki.style/packages/twoslash
-import { computed, ref } from 'vue'
-
-const count = ref(0)
-const doubled = computed(() => count.value * 2)
-
-doubled.value = 2
-```
-
-<arrow v-click="[4, 5]" x1="350" y1="310" x2="195" y2="342" color="#953" width="2" arrowSize="1" />
-
-<!-- This allow you to embed external code blocks -->
-<<< @/snippets/external.ts#snippet
-
-<!-- Footer -->
-
-[Learn more](https://sli.dev/features/line-highlighting)
-
-<!-- Inline style -->
-<style>
-.footnotes-sep {
-  @apply mt-5 opacity-10;
-}
-.footnotes {
-  @apply text-sm opacity-75;
-}
-.footnote-backref {
-  display: none;
-}
-</style>
-
-<!--
-Notes can also sync with clicks
-
-[click] This will be highlighted after the first click
-
-[click] Highlighted with `count = ref(0)`
-
-[click:3] Last click (skip two clicks)
--->
-
----
-level: 2
----
-
-# Shiki Magic Move
-
-Powered by [shiki-magic-move](https://shiki-magic-move.netlify.app/), Slidev supports animations across multiple code snippets.
-
-Add multiple code blocks and wrap them with <code>````md magic-move</code> (four backticks) to enable the magic move. For example:
-
-````md magic-move {lines: true}
-```ts {*|2|*}
-// step 1
-const author = reactive({
-  name: 'John Doe',
-  books: [
-    'Vue 2 - Advanced Guide',
-    'Vue 3 - Basic Guide',
-    'Vue 4 - The Mystery'
-  ]
-})
-```
-
-```ts {*|1-2|3-4|3-4,8}
-// step 2
-export default {
-  data() {
-    return {
-      author: {
-        name: 'John Doe',
-        books: [
-          'Vue 2 - Advanced Guide',
-          'Vue 3 - Basic Guide',
-          'Vue 4 - The Mystery'
-        ]
-      }
-    }
-  }
-}
-```
-
-```ts
-// step 3
-export default {
-  data: () => ({
-    author: {
-      name: 'John Doe',
-      books: [
-        'Vue 2 - Advanced Guide',
-        'Vue 3 - Basic Guide',
-        'Vue 4 - The Mystery'
-      ]
-    }
-  })
-}
-```
-
-Non-code blocks are ignored.
-
-```vue
-<!-- step 4 -->
-<script setup>
-const author = {
-  name: 'John Doe',
-  books: [
-    'Vue 2 - Advanced Guide',
-    'Vue 3 - Basic Guide',
-    'Vue 4 - The Mystery'
-  ]
-}
-</script>
-```
-````
-
----
-
-# Components
-
-<div grid="~ cols-2 gap-4">
-<div>
-
-You can use Vue components directly inside your slides.
-
-We have provided a few built-in components like `<Tweet/>` and `<Youtube/>` that you can use directly. And adding your custom components is also super easy.
-
-```html
-<Counter :count="10" />
-```
-
-<!-- ./components/Counter.vue -->
-<Counter :count="10" m="t-4" />
-
-Check out [the guides](https://sli.dev/builtin/components.html) for more.
-
-</div>
-<div>
-
-```html
-<Tweet id="1390115482657726468" />
-```
-
-<Tweet id="1390115482657726468" scale="0.65" />
-
-</div>
-</div>
-
-<!--
-Presenter note with **bold**, *italic*, and ~~striked~~ text.
-
-Also, HTML elements are valid:
-<div class="flex w-full">
-  <span style="flex-grow: 1;">Left content</span>
-  <span>Right content</span>
-</div>
--->
-
----
-class: px-20
----
-
-# Themes
-
-Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. Switching between themes by just **one edit** in your frontmatter:
-
-<div grid="~ cols-2 gap-2" m="t-2">
-
-```yaml
----
-theme: default
----
-```
-
-```yaml
----
-theme: seriph
----
-```
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-default/01.png?raw=true" alt="">
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-seriph/01.png?raw=true" alt="">
-
-</div>
-
-Read more about [How to use a theme](https://sli.dev/guide/theme-addon#use-theme) and
-check out the [Awesome Themes Gallery](https://sli.dev/resources/theme-gallery).
-
----
-
-# Clicks Animations
-
-You can add `v-click` to elements to add a click animation.
-
-<div v-click>
-
-This shows up when you click the slide:
-
-```html
-<div v-click>This shows up when you click the slide.</div>
-```
-
-</div>
-
-<br>
-
-<v-click>
-
-The <span v-mark.red="3"><code>v-mark</code> directive</span>
-also allows you to add
-<span v-mark.circle.orange="4">inline marks</span>
-, powered by [Rough Notation](https://roughnotation.com/):
-
-```html
-<span v-mark.underline.orange>inline markers</span>
-```
-
-</v-click>
-
-<div mt-20 v-click>
-
-[Learn more](https://sli.dev/guide/animations#click-animation)
-
-</div>
-
----
-
-# Motions
-
-Motion animations are powered by [@vueuse/motion](https://motion.vueuse.org/), triggered by `v-motion` directive.
-
-```html
-<div
-  v-motion
-  :initial="{ x: -80 }"
-  :enter="{ x: 0 }"
-  :click-3="{ x: 80 }"
-  :leave="{ x: 1000 }"
->
-  Slidev
-</div>
-```
-
-<div class="w-60 relative">
-  <div class="relative w-40 h-40">
-    <img
-      v-motion
-      :initial="{ x: 800, y: -100, scale: 1.5, rotate: -50 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-square.png"
-      alt=""
-    />
-    <img
-      v-motion
-      :initial="{ y: 500, x: -100, scale: 2 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-circle.png"
-      alt=""
-    />
-    <img
-      v-motion
-      :initial="{ x: 600, y: 400, scale: 2, rotate: 100 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-triangle.png"
-      alt=""
-    />
-  </div>
-
-  <div
-    class="text-5xl absolute top-14 left-40 text-[#2B90B6] -z-1"
-    v-motion
-    :initial="{ x: -80, opacity: 0}"
-    :enter="{ x: 0, opacity: 1, transition: { delay: 2000, duration: 1000 } }">
-    Slidev
-  </div>
-</div>
-
-<!-- vue script setup scripts can be directly used in markdown, and will only affects current page -->
-<script setup lang="ts">
-const final = {
-  x: 0,
-  y: 0,
-  rotate: 0,
-  scale: 1,
-  transition: {
-    type: 'spring',
-    damping: 10,
-    stiffness: 20,
-    mass: 2
-  }
-}
-</script>
-
-<div
-  v-motion
-  :initial="{ x:35, y: 30, opacity: 0}"
-  :enter="{ y: 0, opacity: 1, transition: { delay: 3500 } }">
-
-[Learn more](https://sli.dev/guide/animations.html#motion)
-
-</div>
-
----
-
-# $\LaTeX$
-
-$\LaTeX$ is supported out-of-box. Powered by [$\KaTeX$](https://katex.org/).
-
-<div h-3 />
-
-Inline $\sqrt{3x-1}+(1+x)^2$
-
-Block
-$$ {1|3|all}
-\begin{aligned}
-\nabla \cdot \vec{E} &= \frac{\rho}{\varepsilon_0} \\
-\nabla \cdot \vec{B} &= 0 \\
-\nabla \times \vec{E} &= -\frac{\partial\vec{B}}{\partial t} \\
-\nabla \times \vec{B} &= \mu_0\vec{J} + \mu_0\varepsilon_0\frac{\partial\vec{E}}{\partial t}
-\end{aligned}
-$$
-
-[Learn more](https://sli.dev/features/latex)
-
----
-
-# Diagrams
-
-You can create diagrams / graphs from textual descriptions, directly in your Markdown.
-
-<div class="grid grid-cols-4 gap-5 pt-4 -mb-6">
-
-```mermaid {scale: 0.5, alt: 'A simple sequence diagram'}
-sequenceDiagram
-    Alice->John: Hello John, how are you?
-    Note over Alice,John: A typical interaction
-```
-
-```mermaid {theme: 'neutral', scale: 0.8}
-graph TD
-B[Text] --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
-```
-
-```mermaid
-mindmap
-  root((mindmap))
-    Origins
-      Long history
-      ::icon(fa fa-book)
-      Popularisation
-        British popular psychology author Tony Buzan
-    Research
-      On effectiveness<br/>and features
-      On Automatic creation
-        Uses
-            Creative techniques
-            Strategic planning
-            Argument mapping
-    Tools
-      Pen and paper
-      Mermaid
-```
-
-```plantuml {scale: 0.7}
-@startuml
-
-package "Some Group" {
-  HTTP - [First Component]
-  [Another Component]
-}
-
-node "Other Groups" {
-  FTP - [Second Component]
-  [First Component] --> FTP
-}
-
-cloud {
-  [Example 1]
-}
-
-database "MySql" {
-  folder "This is my folder" {
-    [Folder 3]
-  }
-  frame "Foo" {
-    [Frame 4]
-  }
-}
-
-[Another Component] --> [Example 1]
-[Example 1] --> [Folder 3]
-[Folder 3] --> [Frame 4]
-
-@enduml
-```
-
-</div>
-
-Learn more: [Mermaid Diagrams](https://sli.dev/features/mermaid) and [PlantUML Diagrams](https://sli.dev/features/plantuml)
-
----
-foo: bar
-dragPos:
-  square: 672,12,167,_,-16
----
-
-# Draggable Elements
-
-Double-click on the draggable elements to edit their positions.
-
-<br>
-
-###### Directive Usage
-
-```md
-<img v-drag="'square'" src="https://sli.dev/logo.png">
-```
-
-<br>
-
-###### Component Usage
-
-```md
-<v-drag text-3xl>
-  <div class="i-carbon:arrow-up" />
-  Use the `v-drag` component to have a draggable container!
-</v-drag>
-```
-
-<v-drag pos="671,177,261,_,-15">
-  <div text-center text-3xl border border-main rounded>
-    Double-click me!
-  </div>
-</v-drag>
-
-<img v-drag="'square'" src="https://sli.dev/logo.png">
-
-###### Draggable Arrow
-
-```md
-<v-drag-arrow two-way />
-```
-
-<v-drag-arrow pos="67,452,253,46" two-way op70 />
-
----
-src: ./pages/imported-slides.md
-hide: false
----
-
----
-
-# Monaco Editor
-
-Slidev provides built-in Monaco Editor support.
-
-Add `{monaco}` to the code block to turn it into an editor:
-
-```ts {monaco}
-import { ref } from 'vue'
-import { emptyArray } from './external'
-
-const arr = ref(emptyArray(10))
-```
-
-Use `{monaco-run}` to create an editor that can execute the code directly in the slide:
-
-```ts {monaco-run}
-import { version } from 'vue'
-import { emptyArray, sayHello } from './external'
-
-sayHello()
-console.log(`vue ${version}`)
-console.log(emptyArray<number>(10).reduce(fib => [...fib, fib.at(-1)! + fib.at(-2)!], [1, 1]))
-```
-
----
-layout: center
-class: text-center
----
-
-# Learn More
-
-[Documentation](https://sli.dev) · [GitHub](https://github.com/slidevjs/slidev) · [Showcases](https://sli.dev/resources/showcases)
-
-<PoweredBySlidev mt-10 />
-
---- 
-layout: center
----
-
 # Reproducibility in Scientific Software Repositories and the Reusable Execution Environment 
 
-Anh Duc Vu, Christoph Blessing, Michael Goedicke
+Anh Duc Vu, Christoph Blessing, Ana Dragoljic, Michael Goedicke
+
+<!--
+Welcome everyone. Today I want to talk about a problem that sits at the intersection of software engineering and scientific methodology — the reproducibility crisis in research software.
+
+The premise is simple and somewhat uncomfortable: having access to the source code of a scientific experiment is often not enough to actually re-run it. We'll look at why that is, how widespread the problem is, and what the landscape looks like in practice.
+-->
 
 ---
 
-# Problem Formulation: The "In-Silico" Gap
-Despite having the code, we often cannot run it.
+# "Works on My Machine"
+### Code is Not Enough
 
-*   **The Decay of Software:** Code that worked during publication often fails 6 months later due to "bit rot."
-*   **The Hidden State:** Research papers often document the *math*, but rarely the *environment* (OS version, compiler flags, shared libraries).
-*   **Numerical Non-Determinism:** Small changes in underlying C-libraries (e.g., `glibc` or `MKL`) can lead to divergent scientific conclusions.
+<div class="flex flex-col h-full gap-4">
 
-> "A scientific publication is not the scholarship itself, it is merely the **advertising** of the scholarship. The actual scholarship is the complete software environment and data which produced the figures." 
-> — *Buckheit & Donoho (1995)*
+<p class="text-sm text-gray-400 italic">You have the code. But can you actually run it?</p>
+
+<div class="grid grid-cols-3 gap-4 mt-2">
+
+<div class="border border-red-400 rounded-lg p-4">
+  <h3 class="font-bold text-red-400 mb-1">Software Decay</h3>
+  <p class="text-sm">Code that worked at publication often fails 6 months later due to <strong>bit rot</strong> — silent breakage as the ecosystem evolves underneath it.</p>
+</div>
+
+<div class="border border-yellow-400 rounded-lg p-4">
+  <h3 class="font-bold text-yellow-400 mb-1">The Missing Environment</h3>
+  <p class="text-sm">Papers document the <strong>math</strong>, rarely the <strong>environment</strong> — OS version, compiler flags, shared libraries, and runtime configuration are invisible.</p>
+</div>
+
+<div class="border border-orange-400 rounded-lg p-4">
+  <h3 class="font-bold text-orange-400 mb-1">Numerical Non-Determinism</h3>
+  <p class="text-sm">Small changes in C-libraries like <code>glibc</code> or <code>MKL</code> can lead to <strong>divergent scientific conclusions</strong> from identical source code.</p>
+</div>
+
+</div>
+
+<blockquote class="border-l-4 border-blue-400 pl-4 mt-2 text-sm text-gray-300">
+  "A scientific publication is not the scholarship itself, it is merely the <strong>advertising</strong> of the scholarship. The actual scholarship is the complete software environment and data which produced the figures."
+  <br/><span class="text-gray-500 text-xs">— Buckheit & Donoho (1995)</span>
+</blockquote>
+
+</div>
+
+<!--
+So what do we actually mean by "works on my machine"? Every developer has heard this phrase — it's almost a joke. But in research software it stops being funny, because there is no shared machine, no shared environment, and often no way to recreate one.
+
+There are three core failure modes. The first is software decay — also called bit rot. A codebase doesn't change, but the world around it does. Libraries release breaking changes, APIs are deprecated, Python versions move on. Code that ran perfectly at submission time may be completely broken six months later, with no changes to the repository itself.
+
+The second is the missing environment. A scientific paper will carefully document every equation, every hyperparameter, every architectural choice — but say nothing about the OS version, the compiler, or which version of BLAS was linked against. That information lives implicitly in the author's machine and almost never makes it into the paper or the repository.
+
+The third is numerical non-determinism. This one is subtle and particularly dangerous. Changing the underlying C library — say, switching from one version of glibc or MKL to another — can change floating point behaviour in ways that silently alter results. Same code, different numbers, potentially different scientific conclusions.
+
+The quote at the bottom is from 1995 and it still feels radical today. Buckheit and Donoho are essentially saying that the paper is just the trailer — the real artifact is the software environment. We are a long way from treating it that way.
+-->
 
 
 ---
 
-# The difficulty to reproduce Computer Science Research
+# How Bad Is It? The Numbers
 
-## 'Works on my Machine'
+<div class="flex flex-col h-full gap-5 mt-2">
 
-  - Survey from Nature with 1,576 researchers: > 70 % failed on reproducibility, > 50 % failed on repeatability \[Baker 2016\]
-  - 58 % of asked graduate students reported difficulties in replication in CS [Cacho 2020]
-  - Issues in AI (e.g., 6 % of 400 studied AI papers included source code) [Hutson 2018]
+<div class="grid grid-cols-3 gap-4">
 
----
+<div class="bg-gray-800 rounded-lg p-4 text-center">
+  <div class="text-4xl font-bold text-red-400">70%</div>
+  <p class="text-sm mt-1">of 1,576 researchers <strong>failed to reproduce</strong> a published result</p>
+  <p class="text-xs text-gray-500 mt-2">Nature survey — Baker 2016</p>
+</div>
 
- - "118,483 (13.72%) declared dependencies"
+<div class="bg-gray-800 rounded-lg p-4 text-center">
+  <div class="text-4xl font-bold text-orange-400">58%</div>
+  <p class="text-sm mt-1">of CS graduate students reported <strong>replication difficulties</strong></p>
+  <p class="text-xs text-gray-500 mt-2">Cacho 2020</p>
+</div>
 
- - "To install the dependencies, we first installed all the setup.py files in the repository. Then,we installed the requirements.txt files. Finally, we installed the Pipfile files. The failure rate for these files were 67.55%, 61.17%, and 65.20%, respectively."
+<div class="bg-gray-800 rounded-lg p-4 text-center">
+  <div class="text-4xl font-bold text-yellow-400">6%</div>
+  <p class="text-sm mt-1">of 400 studied AI papers <strong>included source code</strong> at all</p>
+  <p class="text-xs text-gray-500 mt-2">Hutson 2018</p>
+</div>
 
-Pimentel, João Felipe, et al. "A large-scale study about quality and reproducibility of jupyter notebooks." 2019 IEEE/ACM 16th international conference on mining software repositories (MSR) 
- 
- 
- - "dependencies of 5,429 (34.32%) notebooks failed to install"
+</div>
 
- - "9,100 (87.6%) notebooks resulted in exceptions, for a variety of reasons. ModuleNotFoundError, FileNotFoundError, and ImportError are the most common exceptions we observed in the notebooks"
+<div class="border border-gray-600 rounded-lg p-4 text-sm">
+  <h3 class="font-bold mb-2 text-gray-300">📓 Jupyter Notebooks — A Case Study</h3>
+  <div class="grid grid-cols-2 gap-6">
+    <div>
+      <p>Only <strong class="text-red-400">13.7%</strong> of notebooks declared their dependencies — and of those, installation failure rates were <strong class="text-red-400">61–67%</strong>.</p>
+      <p class="text-gray-500 text-xs mt-1">Pimentel et al., MSR 2019</p>
+    </div>
+    <div>
+      <p><strong class="text-red-400">87.6%</strong> of biomedical Jupyter notebooks resulted in exceptions when re-executed — <code>ModuleNotFoundError</code>, <code>FileNotFoundError</code>, <code>ImportError</code>.</p>
+      <p class="text-gray-500 text-xs mt-1">Samuel & Mietchen, GigaScience 2024</p>
+    </div>
+  </div>
+</div>
 
-Samuel, Sheeba, and Daniel Mietchen. "Computational reproducibility of Jupyter notebooks from biomedical publications." GigaScience 13 (2024)
+</div>
 
----
+<!--
+This is not a theoretical concern — the data is quite damning.
 
-# Root Causes: The "Dependency Hell"
+A Nature survey of over 1,500 researchers found that more than 70% had failed to reproduce someone else's published result. More than half had failed to reproduce their own. This is across disciplines, not just CS.
+
+Within computer science specifically, Cacho found that 58% of graduate students reported difficulties replicating results — and these are people with strong technical backgrounds, working in their own field.
+
+The AI number is perhaps the most striking: in 2018, Hutson found that only 6% of studied AI papers included source code. The majority of results being published were not even theoretically reproducible — there was simply nothing to run.
+
+The Jupyter notebook studies are a useful concrete case because notebooks are supposed to be the gold standard of shareable, executable research. And yet — less than 14% declared their dependencies at all. And even when they did, installation failed more than 60% of the time. The biomedical study re-executed thousands of notebooks and found that nearly 9 in 10 crashed immediately with import or file errors.
+
+The pattern is consistent across years, venues, and fields: reproducibility is treated as an afterthought, if it is considered at all.
+-->
 
 ---
 
@@ -723,7 +173,7 @@ layout: default
 </div>
 
 <!-- Level 2 -->
-<div v-click="3" class="border-l-4 border-orange-500 p-2 bg-orange-50 dark:bg-orange-900/10">
+<div v-click="2" class="border-l-4 border-orange-500 p-2 bg-orange-50 dark:bg-orange-900/10">
   <strong>Level 2: Dependencies are declared in a manifest file, for example requirements.txt.</strong>
   <div class="grid grid-cols-3 gap-2 mt-1">
     <code class="opacity-70">requirements.txt: <br>pandas</code>
@@ -733,7 +183,7 @@ layout: default
 </div>
 
 <!-- Level 3 -->
-<div v-click="5" class="border-l-4 border-yellow-500 p-2 bg-yellow-50 dark:bg-yellow-900/10">
+<div v-click="3" class="border-l-4 border-yellow-500 p-2 bg-yellow-50 dark:bg-yellow-900/10">
   <strong>Level 3: Versions of Top-Level dependencies are specified.</strong>
   <div class="grid grid-cols-3 gap-2 mt-1">
     <code class="opacity-70">pandas==2.1.0</code>
@@ -743,7 +193,7 @@ layout: default
 </div>
 
 <!-- Level 4 -->
-<div v-click="7" class="border-l-4 border-blue-500 p-2 bg-blue-50 dark:bg-blue-900/10">
+<div v-click="5" class="border-l-4 border-blue-500 p-2 bg-blue-50 dark:bg-blue-900/10">
   <strong>Level 4: Dependencies are "locked".</strong>
   <div class="grid grid-cols-3 gap-2 mt-1">
     <code class="opacity-70">poetry.lock</code>
@@ -753,7 +203,7 @@ layout: default
 </div>
 
 <!-- Level 5 -->
-<div v-click="9" class="border-l-4 border-green-500 p-2 bg-green-50 dark:bg-green-900/10">
+<div v-click="6" class="border-l-4 border-green-500 p-2 bg-green-50 dark:bg-green-900/10">
   <strong>Level 5: Container environments like Docker.</strong>
   <div class="grid grid-cols-3 gap-2 mt-1">
     <code class="opacity-70">FROM python:3.9</code>
@@ -763,7 +213,7 @@ layout: default
 </div>
 
 <!-- Level 6 -->
-<div v-click="11" class="border-l-4 border-green-500 p-2 bg-green-50 dark:bg-green-900/10">
+<div v-click="8" class="border-l-4 border-green-500 p-2 bg-green-50 dark:bg-green-900/10">
   <strong>Level 6: Declarative System Environment Specification for example with nix.</strong>
   <div class="grid grid-cols-3 gap-2 mt-1">
     <code class="opacity-70">buildInputs = [
@@ -778,19 +228,17 @@ layout: default
 
 </div>
 
-<!-- FULL SCREEN OVERLAYS -->
-<!-- This div only shows on even clicks (2, 4, 6, etc.) -->
-<div v-if="$clicks % 2 === 0 && $clicks > 0" 
+<!-- SCREEN OVERLAYS FOR DETAILS-->
+<div v-if="$clicks===4 || $clicks===7 || $clicks===9" 
      class="absolute inset-0 m-auto w-[90%] h-[88%] z-50 p-8 shadow-2xl rounded-xl border-t-8 flex flex-col items-center justify-center bg-white dark:bg-gray-800"
      :class="{
-       'border-yellow-500': $clicks === 6,
-       'border-blue-500': $clicks === 8,
-       'border-green-500': $clicks === 10,
-       'border-green-600': $clicks === 12
+       'border-yellow-500': $clicks === 4,
+       'border-green-500': $clicks === 7,
+       'border-green-600': $clicks === 9
      }">
 
   <!-- Content for Level 3 -->
-  <div v-if="$clicks === 6" class="grid grid-cols-2 gap-4">
+  <div v-if="$clicks === 4" class="grid grid-cols-2 gap-4">
 
   <div>
   requirements.txt
@@ -845,7 +293,7 @@ layout: default
   </div>
   
   <!-- Content for Level 5 -->
-  <div v-if="$clicks === 10">
+  <div v-if="$clicks === 7">
   
   # Dockerfiles are not perfect
 
@@ -873,7 +321,7 @@ RUN poetry install --no-root                            # ✅ Python dependencie
   </div>
   
   <!-- Content for Level 5 -->
-  <div v-if="$clicks === 12" class="grid grid-cols-2 gap-4">
+  <div v-if="$clicks === 9" class="grid grid-cols-2 gap-4">
   <div>
 ```nix
 {
@@ -923,31 +371,82 @@ RUN poetry install --no-root                            # ✅ Python dependencie
 
 
 <!-- Level 6 -->
-<div v-click="13" class="mt-4 border-l-4 border-green-500 p-2 bg-green-50 dark:bg-green-900/10">
+<div v-click="10" class="mt-4 border-l-4 border-green-500 p-2 bg-green-50 dark:bg-green-900/10">
   <strong>Beyond: Long time archive of packages + Hardware environment.</strong>
   <div class="grid grid-cols-3 gap-2 mt-1">
-    asd
-    <span class="text-red-600">asd</span>
-    <span class="text-green-600">asd</span>
+    Also the matter of environment vars and sources of non determinism like random number seeds.
   </div>
 </div>
 
 ---
 
-# Scientific Software Repositories
+# Dependency Management in Scientific Software Github Repositories
 
-  - 2020-2025
-  - popular conferences ICSE, Neurips, ICML, ICSA ...
-  - conf_name + year + language:python
+<div class="flex flex-col h-full gap-2">
 
-<img src="/graphs/package_managers_files/package_managers_4_1.png"/>
+<div class="text-sm leading-relaxed">
+
+- Conducted a **GitHub search** spanning **2020–2025** for research software projects
+- Targeted Python repositories from popular CS conferences: **ICSE, ICML, NeurIPS, ASE**, and others
+- Retrieved using the query `conf_name + year + language:python`
+
+</div>
+
+<div class="flex flex-row flex-1 gap-6 items-start justify-center mt-2">
+  <img
+    src="/dependency_pinning_all_conferences.png"
+    class="flex-1 min-w-0 h-auto max-h-72 object-contain rounded shadow-md"
+  />
+  <img
+    src="/lockfile_dockerfile_availability.png"
+    class="flex-1 min-w-0 h-auto max-h-72 object-contain rounded shadow-md"
+  />
+</div>
+
+</div>
+
+
+<!--
+To understand the state of reproducibility in scientific software, we searched GitHub for Python repositories linked to papers from major CS conferences between 2020 and 2025.
+
+The left chart shows that a surprisingly high share of these repos have either undeclared or unpinned dependencies. Undeclared means there is no dependency specification at all — no requirements.txt, no pyproject.toml, nothing. Unpinned means dependencies are listed but without version constraints, so anyone running the code tomorrow may get a completely different version of a library than the one the authors used. Both cases make it essentially impossible to guarantee the same execution environment.
+
+The right chart is even more telling — virtually no repositories use lockfiles or Dockerfiles. These are the two most accessible tools for guaranteeing a reproducible environment. A lockfile freezes the exact resolved versions of every dependency in the tree. A Dockerfile packages the entire runtime. The near-zero adoption across thousands of repos from top-tier venues is a striking result.
+
+What is perhaps most interesting is that this is not a niche or obscure set of repositories — these are codebases associated with peer-reviewed papers at ICSE, ICML, NeurIPS, ASE, and similar venues. These are researchers who presumably care about scientific rigour, yet the software artifacts they publish are largely not reproducibly executable.
+
+We can also break these numbers down per conference and per year — which reveals whether certain venues or time periods are better or worse, and whether the situation has improved at all over the five years we studied. Spoiler: the trend is not particularly encouraging.
+
+The takeaway from these charts is simple: dependency mismanagement is the norm, not the exception, in scientific software — and that has direct consequences for the reproducibility of scientific results.
+-->
 
 
 ---
 
-# RDMC
+# NFDIxCS
 
-<img src="/RDMC.png" class="w-8 h-12"/>
+<div class="grid grid-cols-2 gap-8 mt-4">
+
+<div class="flex flex-col justify-center space-y-3">
+
+**Central object: Research Data Management Containers (RDMC)** — time capsules for research data and software
+
+- 📦 Bundles software, data, and metadata
+- 🔍 FAIR by design – metadata is openly available
+- 🔒 Manages access and workflows
+- 🗄️ Container will be archived
+
+</div>
+
+<div class="flex items-center justify-center">
+  <img src="/RDMC.png" class="w-64 h-auto rounded shadow-md"/>
+</div>
+
+</div>
+
+---
+
+# Reusable Execution Environment (REE)
 
 <img src="/RDMC_and_REE.png"/>
 
