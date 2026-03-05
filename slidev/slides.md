@@ -625,6 +625,7 @@ echo "OK: runtime validated successfully"</pre>
 
 </div>
 
+<!-- SLIDE: REE Model -->
 <!--
 The REE model is a structured metadata object that describe everything needed to rebuild and verify a research execution environment.
 
@@ -735,6 +736,7 @@ layout: default
 
 </div>
 
+<!-- SLIDE: REE Services -->
 <!--
 To that end envision a handful of functionality to manage REEs.
 
@@ -783,6 +785,7 @@ layout: default
 
 </div>
 
+<!-- SLIDE: Conclusion -->
 <!--
 To wrap up — we investigated scientific repositories on their handling of dependencies which strongly indicates their reproducibility, which did not look very promising.
 
