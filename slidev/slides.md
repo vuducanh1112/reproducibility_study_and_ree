@@ -66,15 +66,15 @@ layout: default
 
 <!-- SLIDE: Sharing Code != Sharing Science -->
 <!--
-"Works on my machine" — an expression we probably are all familiar with. The effects of that are especially felt in research, where code is routinely written under deadline pressure, published, and then abandoned.
+"Works on my machine" is an expression we probably are all familiar with. The effects of that are especially felt in research, where code is routinely written under deadline pressure, published, and then abandoned.
 
-So simply sharing code is not the same as sharing science, as the reproducibility may suffer from a multitude of reasons.
+So simply sharing code is not the same as sharing science, for a multitude of reasons.
 
 First, even if the code doesn't change — the world around it does. Libraries release breaking changes, and so, code that ran perfectly at submission may be completely broken six months later with no changes to the repository.
 
-Second, undocumented environments. A paper may describe every equation and hyperparameter, but then say nothing about the OS, the compiler flags, the library versions, or the hardware. That context lives implicitly on the author's machine and almost never makes it into the repository.
+Second, undocumented environments. A paper may describe every equation and hyperparameter, but then say nothing about the OS, the compiler flags, the library versions, or the hardware. That context lives implicitly on the author's machine.
 
-And third, non-determinism. Parallel operations like GPU matrix multiplications have non-deterministic execution order. Seeds for random number generators need to be fixed. The same code on the same machine can produce completely different results across runs.
+And third, non-determinism. Parallel computations for example cause non-deterministic execution order. Seeds for random number generators need to be fixed. The same code on the same machine can produce completely different results across runs.
 
 One of the NFDIxCS mottos is "No Data Without Software." The FAIR principles were designed for research data, but data does not exist without the software that produced it. Research management needs to treat the execution environment as a primary research artifact.
 -->
@@ -118,7 +118,7 @@ Baker's survey in 2016 of over 1,500 researchers found that 70% had failed to re
 
 Computational notebooks were supposed to be the gold standard of executable, shareable research. However, in a study in 2019, less than 14% declared their dependencies at all. And for those that did, installation failed more than 60% of the time. In a more recent study, nearly 90% of biomedical notebooks crashed on re-execution with import or file errors.
 
-This seems widespread and it sets up the core question: what does it take to actually guarantee a reproducible environment?
+The problem seems widespread.
 -->
 
 ---
@@ -151,13 +151,13 @@ This seems widespread and it sets up the core question: what does it take to act
 
 <!-- SLIDE: Dependency Management -->
 <!--
-We also did our own little study, so we searched GitHub for research Python repositories and looked how they manage their software dependencies.Specifically we looked for repos associated with papers from major Computer Science conferences — ICSE, ICML, NeurIPS, ASE, and others — spanning 2020 to 2025.
+We also did our own study on how scientific repositories manage their dependency environments.
 
-The left chart shows the stats on specifying the versions of the dependencies. We still see a lot of grey — too many repositories declare no dependencies at all in a typical configuration file. The blue and gold segments are relatively balanced; there is much room for improvements for researchers to accurately specify their dependencies.
+We searched GitHub for Python repositories associated with papers from major Computer Science conferences — ICSE, ICML, NeurIPS, ASE, and others — spanning 2020 to 2025.
 
-The right chart shows lockfile and Dockerfile availability. Here it looks even worse. Lockfiles and Dockerfiles are essentially absent across hundreds of repositories from top-tier venues.
+The left chart shows the stats on specifying the versions of the dependencies. The grey bars are the number of repos where we did not find any declared dependencies in a typical configuration file. The gold bars show those where all the dependencies have their versions specified. And blue are those that declared their dependencies but not all of them specified their versions. We see a lot of grey and blue, which seriously impacts the reproducibility of those repos.
 
-The problem seems consistent.
+The right chart looks even worse. Here, we looked for Lockfiles and Dockerfiles, which are essentially absent across hundreds of repositories from top-tier venues.
 -->
 
 ---
@@ -429,36 +429,36 @@ RUN poetry install --no-root
 Ensuring full reproducibility is not an easy task at all. There are levels to it however, so incremental improvements can be achieved. We tried to come up with such reproducibility levels.
 
 [CLICK — LVL 01]
-At the bottom: natural language only. A README that says "this project requires Python 3.10 and numpy." Better than nothing, but imprecise and impossible to automate. An improvement is simple: create a formal dependency file that can be used by tools.
+At the bottom: natural language descriptions. For example a README that says "this project requires Python 3.10 and numpy." This is better than nothing, but imprecise and requires manually following the instructions. 
 
 [CLICK — LVL 02]
-A manifest file like a requirements.txt is a step forward — it names the required packages. But without specifying which version is required, you get whatever PyPI serves today. Run the same install command six months apart and you likely get different packages. So, we should pin the versions.
+An improvement is simple: create a formal dependency file that can be used by tools. For example listing the packages in a requirements.txt file. However, without specifying which version is required, you get whatever is served today. Run the same install command six months apart and you likely get different packages.
 
 [CLICK — LVL 03]
-Pinning the top-level versions is better, but it leaves transitive dependencies floating. Pandas depends on numpy, which depends on other things. Those are all still unspecified.
+Pinning the top-level versions is better but leaves transitive dependencies floating.
 
 [CLICK — lockfile overlay]
-This is the hidden problem with pinned requirements. You declare four packages, but pipdeptree reveals the actual install graph. Django pulls in these two packages; pandas pulls in python-dateutil, which pulls in six. None of these are pinned. A lockfile captures the complete dependency graph with cryptographic hashes, making the install more reproducible and verifiable.
+This is the hidden problem with pinned requirements. You declare four packages, but the dependency tree here reveals what gets installed. Django needs two additional undeclared packages; pandas pulls in python-dateutil, which pulls in six. None of these are pinned. To improve this, we can use a lockfile that captures the complete dependency graph with cryptographic hashes, making the installation more reproducible and verifiable.
 
 [CLICK — LVL 04]
-A lockfile typically only covers the language specific packages. It says nothing about system-level dependencies — libblas, glibc, CUDA. These are outside the Python ecosystem, but equally impact the behaviour of the code. Containers or VMs can help with this.
+A lockfile typically only covers language specific packages however. It says nothing about system-level dependencies like CUDA. These are outside the Python ecosystem, but equally impact the behaviour of the code. Containers or VMs can help with this.
 
 [CLICK — LVL 05]
 Docker is probably the most popluar tool. But Docker is not reproducible by default.
 
 [CLICK — Docker overlay]
-"FROM python:3.9" is a moving tag — it gets silently updated every time Python releases a patch. "apt-get install libblas-dev" again has no version specified. And of course using pip without a lockfile leaves transitive dependencies floating. These things are fixable — pin to an immutable digest, pin apt package versions, use a lockfile — but it requires deliberate effort.
+Looking at this example, "FROM python:3.9" is a moving tag — it gets silently updated every time Python releases a patch. "apt-get install libblas-dev" has no version specified. And then using pip without a lockfile leaves transitive dependencies floating. These things are fixable — pin to an immutable digest, pin apt package versions, use a lockfile. But this requires deliberate effort.
 
 [CLICK — LVL 06]
-Better reproducibility are promised by declarative approaches like nix. Nix is a purely functional package manager — every package lives in its own isolated path, identified by a hash of its inputs. Nix files produce identical environments across different machines without version drifts in the packages.
+Better reproducibility is promised by declarative approaches. Nix for example is a purely functional package manager — every package lives in its own isolated path, identified by a hash of its inputs. Nix files produce identical environments across different machines without version drifts in the packages.
 
 [CLICK — Nix overlay]
-Here is an example of a nix file shown here that declares the exact toolchain — git, docker, node, uv and kubectl — which is easily replicated with all their upstream dependencies. Additionally there are utils to handle cross-platform builds automatically. This nix file can easily version controlled, and others just need to run nix develop to get an identical environment.
+The example nix file shown here declares the exact toolchain — git, docker, node, uv and kubectl — which is easily replicated with all their upstream dependencies. Additionally there are utils to handle cross-platform builds automatically. This nix file can easily version controlled, and others just need to run nix develop to get an identical environment.
 
 [CLICK — BEYOND]
-But even Nix doesn't solve everything. The long-term availability of package source code is an open problem — if a package is removed from its registry, even a perfectly specified environment can't be rebuilt. The answer there is long-term archival through the Software Heritage Foundation. And there are additional sources of non-determinism that go beyond package management: environment variables, random seeds, hardware-specific behaviour. These remain open research problems.
+But even Nix doesn't solve everything. The long-term availability of source code is an open problem — if github is not available anymore, even a perfectly specified environment can't be rebuilt. We need long-term archival. Additionally, sources of non-determinism that go beyond package management: environment variables, random seeds, hardware-specific behaviour; remain open problems to be handled.
 
-Most research software today sits at the lower levels, but luckily there are tools improve on this.
+Most research software today still sits at the lower levels unfortunately.
 -->
 
 ---
@@ -493,11 +493,9 @@ layout: default
 
 <!-- SLIDE: NFDIxCS -->
 <!--
-At NFDIxCS this is one of our major concerns we work to address. The Research Data Management Container is our main concept — a time capsule that bundles data, software, and metadata into a single archived object to ensure FAIR research artifacts by design.
+At NFDIxCS this is one of our major concerns we work to address. The Research Data Management Container is our core concept — a time capsule that bundles data, software, and metadata into a single archived object to ensure FAIR research artifacts by design.
 
 The Reusable Execution Environment is a component inside the RDMC that handles the execution of the stored software. The goal is to make it easy to rerun and verify the computational results.
-
-Let me show you the model we have designed for the REE itself.
 -->
 
 ---
@@ -571,7 +569,7 @@ layout: default
 
 <div v-click="3" class="example-grid px-2 py-1.5 rounded bg-gray-50 border border-gray-200">
 <span class="font-bold text-gray-400">runtime</span>
-<span class="text-gray-700">./envs/docker-image.tar.gz</span>
+<span class="text-gray-700">./envs/my-research-env.tar.gz</span>
 </div>
 
 <div v-click="4" class="px-2 py-1.5 rounded bg-amber-50 border border-amber-300">
@@ -627,30 +625,30 @@ echo "OK: runtime validated successfully"</pre>
 
 <!-- SLIDE: REE Model -->
 <!--
-The REE model is a structured metadata object that describe everything needed to rebuild and verify a research execution environment.
+The REE is a structured metadata object that describe everything needed to rebuild and verify a research execution environment.
 
 [CLICK — swhid]
-The software hash id is a persistent identifier by the Software Heritage Foundation. It uniquely describes and identifies the source code.
+The software hash id uniquely describes and identifies the source code and can be used for long-term storage with the Software Heritage Foundation.
 
 [CLICK — source_repository]
 The source repository is the live URL — GitHub, GitLab, or any host.
 
 [CLICK — runtime]
-The runtime field is optional — a pre-built artifact like a Docker image tarball for users who want to skip the build step.
+The runtime field directly points to a ready to run environment like a docker image tarball for example.
 
 [CLICK — build_runtime_script]
-The build script must reconstruct the environment entirely from scratch — here using docker build to create a runnable image.
+The build script must reconstruct the runtime entirely from scratch — here using docker build to create a runnable image.
 
 [CLICK — sbom]
-The Software Bill of Materials is a machine-readable inventory of every package in the environment — name, version, and a cryptographic checksum per entry. The SBOM is the ground truth and can be used to validate the reproducibility of the environment. 
+The sbom - the Software Bill of Materials - is an inventory of every package in the environment — name, version, and a cryptographic checksum per entry. The SBOM is the ground truth and can be used to validate the reproducibility of the environment.
 
 [CLICK — hardware_description]
-The hardware description field should document the used hardware so that anyone trying to reproduce results knows what they are targeting and can flag if hardware differences may explain discrepancies.
+The hardware description field should document the used hardware so that anyone trying to reproduce results knows what they are targeting and can flag if different hardware leads to different results.
 
 [CLICK — validation_script]
-The validation script should verify that the runtime is runnable — here verifying the container starts successfully. The key design point is structural: reproducibility is not a claim made in a README, it is a check that must pass.
+The validation script should verify that the runtime is runnable — for example verifying that the container starts successfully.
 
-This REE model shifts reproducibility from a best practise — "you should document your environment" — to a machine checkable structural requirement.
+This REE model shifts reproducibility from a best practise — "you should document your environment" — to a verifiable structural requirement.
 -->
 
 ---
@@ -740,11 +738,17 @@ layout: default
 <!--
 To that end envision a handful of functionality to manage REEs.
 
-Create REE registers the object and validates the fields and may suggest values in case the user does not have the required information. Evaluate Reproducibility Level inspects the code and the metadata and automatically scores it against our six-level taxonomy — giving researchers immediate feedback on what is missing. Build Runtime executes the build script from scratch. Validate Runtime runs the validation script and returns a pass or fail — reproducibility as a check, not a claim.
+"Create REE" registers the object and validates the fields and may suggest values in case the user does not have the required information. 
 
-Upload to Software Heritage closes the archival loop — depositing the source code long-term and obtaining a SWHID.
+"Evaluate Reproducibility Level" inspects the code and the metadata and automatically scores it against the previously mentioned levels. 
 
-Together these operations help create new reproducible environments, and also validate existing REEs.
+"Build Runtime" executes the build script from scratch, and checks it against the sbom. 
+
+"Validate Runtime" runs the validation script to verify that the environment is indeed usable.
+
+"Upload to Software Heritage" closes the archival loop — depositing the source code long-term and obtaining a SWHID.
+
+Together these operations help create new reproducible environments, and also validate existing REEs by others.
 -->
 
 ---
@@ -787,11 +791,11 @@ layout: default
 
 <!-- SLIDE: Conclusion -->
 <!--
-To wrap up — we investigated scientific repositories on their handling of dependencies which strongly indicates their reproducibility, which did not look very promising.
+To wrap up — we investigated scientific repositories on their dependency management which strongly indicates their reproducibility.
 
-We looked at different levels of reproducibility from a READMEs to a declarative environment management, each one addressing a specific failure mode the level below leaves open. This gives us and researchers a concrete vocabulary to evaluate reproduciblity.
+We looked at different levels of reproducibility from informal descriptions to declarative environment management.
 
-Our model of a Reusable Execution Environment and its services aims to improve this.
+The Reusable Execution Environment of NFDIxCS and its services aims to improve this.
 
 There are a lot of challenges that remain open: validating environments against hardware requirements, automatically improving reproducibility levels from underspecified inputs, and tracking provenance across build and validation runs.
 
